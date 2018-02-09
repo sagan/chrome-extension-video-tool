@@ -1,0 +1,9 @@
+
+body {
+	min-width: 300px;
+}
+
+#valueLoopStart, #valueLoopEnd {
+	display: inline;
+	width: 50px;
+} 
