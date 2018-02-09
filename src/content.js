@@ -57,7 +57,8 @@ async function timeupdateHandle(e) {
     document.title = time(video.currentTime) + ' ' + document.title.replace(/^[\d:]+\s*/, '');
   }
 
-  if( self.l && (video.currentTime + 0.5 >= video.duration) ) {
+  if( self.l && (video.currentTime + 1 >= video.duration) ) {
+    console.log('back')
     video.currentTime = self.s || 0;
     video.play();
   }
