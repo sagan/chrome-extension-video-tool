@@ -8,14 +8,22 @@
 	<div id="root">
 		<label><input type="checkbox" id="checkboxShowCurrentTime" />Show currentTime in title when playing video</label>
 		<p id="url"></p>
+		<p>Video duration: <span id="duration">Unknown</span></p>
 		<form>
-			<p><label><input type="checkbox" id="checkboxLoop" />Loop play the video of this page</label></p>
-<!-- 			<p><label>Start time: <input type="text" id="valueLoopStart" value="00:00" /></label></p>
-			<p><input type="range" id="rangeLoopStart" /></p>
-			<p><label>End time: <input type="text" id="valueLoopEnd" value="00:00" /></label></p>
-			<p><input type="range" id="rangeLoopEnd" /></p> -->
+			<p><label><input type="checkbox" id="checkboxLoop" disabled />Loop play the video of this page (Set range below)</label></p>
+			<div class="multi-range-wrapper">
+				<div class='multi-range' data-lbound='0' data-ubound='100'>
+			    <hr />
+			    <input disabled type='range' id="slideLoopStart" min='0' max='100' step='1' value='0' />
+			    <input disabled type='range' id="slideLoopEnd" min='0' max='100' step='1' value='100' />
+				</div>
+				<div class="multi-range-value">
+					<input type="text" id="valueLoopStart" value="00:00" readonly /> - <input type="text" readonly id="valueLoopEnd" value="00:00" />
+				</div>
+			</div>
 		</form>
 	</div>
+	<span id="info"></span>
 	<script src="popup.js"></script>
 </body>
 </html>

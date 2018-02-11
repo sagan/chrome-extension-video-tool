@@ -11,9 +11,10 @@ let self, options;
     if( target.tagName != 'VIDEO' )
       return;
     self = await get(location.href) || {}; // refresh self in case url changed with no page reload
-    // console.log('play');
+    // console.log('play', target.duration);
     video && video.removeEventListener('timeupdate', timeupdateHandle);
     video = target.addEventListener('timeupdate', timeupdateHandle) || target;
+    chrome.runtime.sendMessage({type: "durationchange", duration: video.duration}, Function.prototype);
   }, true);
 
   window.addEventListener('pause', async ({target}) => {
@@ -26,13 +27,13 @@ let self, options;
   }, true);
 
   window.addEventListener('durationchange', async ({target}) => {
-    // console.log("duration change", target, target.duration);
     if( video == target ) {
+      // console.log("duration change", target, target.duration);
       chrome.runtime.sendMessage({type: "durationchange", duration: target.duration}, Function.prototype);
     }
   }, true);
 
-  chrome.runtime.onMessage.addListener(message => {
+  chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     // console.log('message', message);
     switch(message.type) {
       case 'update':
@@ -45,6 +46,9 @@ let self, options;
           options = message.options;
         }
         break;
+      case 'query':
+        sendResponse({duration: video ? video.duration : 0});
+        break;
       default:
         ;
     }
@@ -52,15 +56,19 @@ let self, options;
 })();
 
 async function timeupdateHandle(e) {
-  // console.log('time change', video.currentTime, video.duration);
+  // console.log('time change', video.currentTime, video.duration, self.s, self.e);
   if( options.showCurrentTime ) {
     document.title = time(video.currentTime) + ' ' + document.title.replace(/^[\d:]+\s*/, '');
   }
-
-  if( self.l && (video.currentTime + 1 >= video.duration) ) {
-    console.log('back')
-    video.currentTime = self.s || 0;
-    video.play();
+  if( self.l ) {
+    if(
+      ( video.currentTime < 0.5 && video.currentTime + 1 <= (self.s || 0) )
+      || ( self.e && video.currentTime >= self.e && video.currentTime <= self.e + 1 )
+      || video.currentTime + 1 >= video.duration
+    ) {
+      video.currentTime = self.s || 0;
+      video.play();
+    }
   }
 }
 

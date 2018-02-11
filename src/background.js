@@ -1,22 +1,37 @@
 
 // current tab data
 var data = {
-	url: "",
-	tabId: '',
+  url: "",
+  tabId: '',
+  duration: 0, // video duration
 }
 
 chrome.tabs.onActivated.addListener(async ({tabId, windowId}) => {
-	chrome.tabs.get(tabId, ({status, title, url}) => {
-		data.url = url;
-		data.tabId = tabId;
-	});
+  chrome.tabs.get(tabId, ({status, title, url}) => {
+    data.url = url;
+    data.tabId = tabId;
+    data.duration = 0;
+  });
 });
 
 chrome.tabs.onUpdated.addListener(async (tabId, {status, url}) => {
-	if( !url )
-		return;
-	// || status != "complete"
-	data.url = url;
+  if( !url )
+    return;
+  data.url = url;
+  data.duration = 0;
+});
+
+chrome.runtime.onMessage.addListener(function(msg, sender, sendResponse) {
+  console.log(msg, sender.tab.id, data.tabId);
+  if( sender.tab.id == data.tabId ) {
+    switch(msg.type) {
+      case 'durationchange':
+        data.duration = msg.duration;
+        break;
+      default:
+        break;
+    }
+  }
 });
 
 async function get(keys) {

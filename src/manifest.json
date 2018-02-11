@@ -1,7 +1,7 @@
 {
     "name": "Video Tool",
     "description": "Add loop play function to any html5 video and other tweaks for video playing.",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "author": "Jacques De SAGAN",
     "manifest_version": 2,
     "permissions": ["tabs", "storage"],
